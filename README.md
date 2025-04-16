@@ -30,7 +30,8 @@ This utility runs parallel instances of `spack install`:
 ```console
 ./parallel_install.sh 2 4
 ```
-runs two instances of `spack install -j4`.
+runs two instances of `spack install -j4`. It is intended to be compatible with
+the `--fail-fast` flag. The script may be sourced or run as an executable.
 
 To run in PBS Pro in blocking mode:
 ```console
