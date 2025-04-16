@@ -12,7 +12,6 @@
 #
 
 import os
-import sys
 
 from spack.environment import active_environment
 from spack.build_systems.cargo import CargoPackage
