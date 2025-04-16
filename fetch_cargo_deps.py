@@ -2,7 +2,8 @@
 #
 # Run this script in an active Spack environment to fetch Rust dependencies and
 # store them in $CARGO_HOME. You must either run it with 'spack-python' or have
-# 'spack-python' in your $PATH.
+# 'spack-python' in your $PATH. Ensure $CARGO_PATH has the same value when
+# 'spack install' is run.
 #
 # For each spec that is a CargoPackage, it will attempt to use that spec's
 # 'rust' dependency to execute 'cargo fetch', but will fall back to searching
