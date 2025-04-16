@@ -1,13 +1,13 @@
 #!/usr/bin/env spack-python
 #
-# Run this script in an active Spack environment to fetch Go dependencies and
-# store them in $GOMODCACHE. You must either run it with 'spack-python' or have
-# 'spack-python' in your $PATH. Ensure $GOMODCACHE has the same value when
-# 'spack install' is run.
+# Run this script in an active, concretized Spack environment to fetch Go
+# dependencies and store them in $GOMODCACHE. You must either run it with
+# 'spack-python' or have 'spack-python' in your $PATH. Ensure $GOMODCACHE has
+# the same value when 'spack install' is run.
 #
-# For each spec that is a GoPackage, it will attempt to use that spec's
-# 'go' dependency to execute '', but will fall back to searching
-# $PATH if that dependency has not already been installed.
+# For each spec that is a GoPackage, it will attempt to use that spec's 'go'
+# dependency to execute '', but will fall back to searching $PATH if that
+# dependency has not already been installed.
 #
 # Alex Richert, Apr 2025
 #
