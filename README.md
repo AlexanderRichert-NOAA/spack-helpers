@@ -5,7 +5,7 @@ This repository contains scripts intended to help with various aspects of packag
 ## Utilities
 
 ### fetch_cargo_deps.py
-This utility prefetches Rust package dependencies for CargoPackage-type
+This utility prefetches Rust package dependencies for 'rust' dependents and/or user-specified
 packages in an activated, concretized environment. It uses `cargo fetch` to
 download dependencies (defined in Cargo.toml) to `$CARGO_HOME` (which must be
 set both at fetch time and install time). No arguments are taken.
