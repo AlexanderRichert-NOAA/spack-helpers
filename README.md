@@ -63,6 +63,16 @@ This utility parses spack.lock and shows instances of multiple hashes for the
 same package name in the concrete specs. Packages can be ignored with the `-i`
 flag.
 
+### minimize_dependencies.py (experimental)
+This is an experimental script that attempts to identify binary variant
+settings that will reduce the overall number of packages installed. It can
+provide output in human readable, YAML (package.yaml), and Spack CLI (`spack
+config add ...`) formats. It runs in an active, concretized environment. It
+will take a long time to run for large environments, as it runs a test
+concretization for every binary variant in the environment (by default however
+it runs in parallel). It has not been extensively tested, such as for very
+large environments or environments with multiple versions of a given package.
+
 ## Links
 
 The following may be of some use as reference for Spack enthusiasts:
