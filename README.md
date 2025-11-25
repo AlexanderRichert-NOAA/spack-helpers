@@ -86,6 +86,7 @@ spack validate compilers intel-oneapi-compilers gcc
 ```
 will return an error if any packages have `c`/`cxx`/`fortran` providers that are not `intel-oneapi-compilers` or `gcc`.
 
+
 ## Unit tests
 
 To run the unit tests:
