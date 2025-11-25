@@ -2,7 +2,7 @@
 
 _helpersdir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-echo SPACK_ROOT: ${SPACK_ROOT?"No SPACK_ROOT found"}
+echo SPACK_ROOT: ${SPACK_ROOT}
 echo spack exe: $(which spack)
 if [ $? != 0 ]; then echo "spack executable not found"; fi
 

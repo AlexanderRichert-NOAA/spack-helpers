@@ -8,14 +8,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: spack/setup-spack@bbb4eb97fe9eebb51de5f9a6b6aedbcec4f0a226
+      - uses: spack/setup-spack@v2
       
       - name: Run tests
         shell: spack-bash {0}
         run: |
-          which spack
-          export SPACK_ROOT=$(realpath $(dirname $(which spack))/..)
-          echo SPACK_ROOT: $SPACK_ROOT
           . source_me.sh
           spack unit-test --extension=helpers -m "not integration"
           # Run the long-running tests after we've run the short ones:
