@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: spack/setup-spack@v2.1.0
+      - uses: spack/setup-spack@bbb4eb97fe9eebb51de5f9a6b6aedbcec4f0a226
       
       - name: Run tests
         shell: spack-bash {0}
