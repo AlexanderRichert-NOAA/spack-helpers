@@ -8,12 +8,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: spack/setup-spack@v2
+      - uses: spack/setup-spack@v2.1.1
         with:
           ref: develop
       
       - name: Run tests
-        shell: spack-bash {0}
+        shell: spack-bash
         run: |
           which spack
           echo SPACK_ROOT: $SPACK_ROOT
