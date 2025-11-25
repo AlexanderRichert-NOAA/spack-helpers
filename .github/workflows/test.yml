@@ -8,16 +8,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: spack/setup-spack@v2.1.1
-        with:
-          ref: develop
-          path: spack
+      - uses: spack/setup-spack@v2.1.0
       
       - name: Run tests
         shell: spack-bash {0}
         run: |
           which spack
-          export SPACK_ROOT=$(realpath $(which spack)/../..)
           echo SPACK_ROOT: $SPACK_ROOT
           . source_me.sh
           spack unit-test --extension=helpers -m "not integration"
