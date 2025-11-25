@@ -1,0 +1,19 @@
+name: Test
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: spack/setup-spack@v2
+        with:
+          ref: develop
+      
+      - name: Run tests
+        shell: bash
+        run: |
+          source source_me.sh
+          spack unit-test --extension=helpers
