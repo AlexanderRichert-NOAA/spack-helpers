@@ -15,6 +15,8 @@ jobs:
       - name: Run tests
         shell: spack-bash {0}
         run: |
+          which spack
+          echo SPACK_ROOT: $SPACK_ROOT
           . source_me.sh
           spack unit-test --extension=helpers -m "not integration"
           # Run the long-running tests after we've run the short ones:
