@@ -14,7 +14,7 @@ jobs:
         shell: spack-bash {0}
         run: |
           which spack
-          export SPACK_ROOT=$(realpath $(dirname $(which spack))/../..)
+          export SPACK_ROOT=$(realpath $(dirname $(which spack))/..)
           echo SPACK_ROOT: $SPACK_ROOT
           . source_me.sh
           spack unit-test --extension=helpers -m "not integration"
