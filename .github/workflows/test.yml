@@ -13,7 +13,7 @@ jobs:
           ref: develop
       
       - name: Run tests
-        shell: spack-bash
+        shell: spack-bash {0}
         run: |
           which spack
           echo SPACK_ROOT: $SPACK_ROOT
