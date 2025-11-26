@@ -1,0 +1,41 @@
+name: Test Action
+
+on: [push, pull_request]
+
+jobs:
+  test-with-existing-spack:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Setup Spack
+        uses: spack/setup-spack@v2
+        with:
+          ref: develop
+      
+      - name: Checkout action
+        uses: actions/checkout@v4
+      
+      - name: Test action with existing Spack
+        uses: ./
+      
+      - name: Verify extension registered
+        shell: spack-bash {0}
+        run: |
+          spack filter-compilers --help
+          spack validate --help
+
+  test-with-builtin-install:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout action
+        uses: actions/checkout@v4
+      
+      - name: Test action with built-in Spack install
+        uses: ./
+        with:
+          install-spack: 'true'
+      
+      - name: Verify extension registered
+        shell: spack-bash {0}
+        run: |
+          spack filter-compilers --help
+          spack validate --help
