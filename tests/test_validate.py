@@ -4,11 +4,14 @@ import pytest
 
 import spack.environment as ev
 import spack.spec
+import spack.extensions
 
-from helpers.check_duplicates import check_duplicate_packages
-from helpers.check_compiler_usage import check_compiler_usage
-from helpers.check_allowed_compilers import check_allowed_compilers
-from helpers.check_approved_packages import check_approved_packages
+# Load the helpers extension
+spack.extensions.load_extension("helpers")
+from spack.extensions.helpers.check_duplicates import check_duplicate_packages
+from spack.extensions.helpers.check_compiler_usage import check_compiler_usage
+from spack.extensions.helpers.check_allowed_compilers import check_allowed_compilers
+from spack.extensions.helpers.check_approved_packages import check_approved_packages
 
 
 @pytest.fixture(scope="session")

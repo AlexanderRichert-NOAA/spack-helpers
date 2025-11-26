@@ -7,8 +7,11 @@ import pytest
 import spack.config
 import spack.environment as ev
 import spack.spec
+import spack.extensions
 
-from helpers.fetch_cargo import *
+# Load the helpers extension
+spack.extensions.load_extension("helpers")
+from spack.extensions.helpers.fetch_cargo import *
 
 
 def find_system_python():

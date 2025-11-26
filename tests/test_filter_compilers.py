@@ -3,8 +3,11 @@ import pytest
 
 import spack.environment as ev
 import spack.config
+import spack.extensions
 
-from helpers.filter_compiler_packages import filter_compiler_packages
+# Load the helpers extension
+spack.extensions.load_extension("helpers")
+from spack.extensions.helpers.filter_compiler_packages import filter_compiler_packages
 
 
 @pytest.fixture
