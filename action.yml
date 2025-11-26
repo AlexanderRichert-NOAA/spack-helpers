@@ -23,7 +23,8 @@ runs:
     - name: Configure extension
       shell: bash
       run: |
-        echo $GITHUB_PATH
+        echo $PATH
+        cat $GITHUB_PATH
         which spack
         if [ -z $SPACK_ROOT ]; then
           export SPACK_ROOT=$(spack location --spack-root)
