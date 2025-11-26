@@ -13,7 +13,7 @@ jobs:
       - name: Run tests
         shell: spack-bash {0}
         run: |
-          rm -rf /usr/local &
+          sudo rm -rf /usr/local &
           export SPACK_ROOT=$(realpath $(dirname $(which spack))/..)
           . source_me.sh
           spack unit-test --extension=helpers -m "not integration"
