@@ -23,10 +23,6 @@ runs:
     - name: Configure extension
       shell: bash
       run: |
-        echo $PATH
-        ls /home/runner/work/spack-helpers/spack-helpers/spack/bin
-        cat $GITHUB_PATH
-        which spack
         if [ -z $SPACK_ROOT ]; then
           export SPACK_ROOT=$(spack location --spack-root)
           echo "SPACK_ROOT=$SPACK_ROOT" >> $GITHUB_ENV
