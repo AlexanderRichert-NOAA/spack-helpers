@@ -23,9 +23,10 @@ runs:
     - name: Configure extension
       shell: bash
       run: |
-        cd ${{ github.action_path }}
+        echo $GITHUB_PATH
+        which spack
         if [ -z $SPACK_ROOT ]; then
           export SPACK_ROOT=$(spack location --spack-root)
           echo "SPACK_ROOT=$SPACK_ROOT" >> $GITHUB_ENV
         fi
-        . source_me.sh
+        . ${{ github.action_path }}/source_me.sh
