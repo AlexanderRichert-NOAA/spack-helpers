@@ -8,8 +8,6 @@ jobs:
     steps:
       - name: Setup Spack
         uses: spack/setup-spack@v2
-        with:
-          ref: develop
       
       - name: Checkout action
         uses: actions/checkout@v4
