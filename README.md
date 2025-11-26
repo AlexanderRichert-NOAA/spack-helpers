@@ -38,7 +38,7 @@ spack fetch-deps rust --use-spack-rust
 
 
 ## Environment validation
-> [! IMPORTANT]
+> [!IMPORTANT]
 > All of the following commands must be run in an active, concretized environment. Unconcretized root specs will not be accounted for.
 
 ### Duplicate checking: validate check-duplicates
