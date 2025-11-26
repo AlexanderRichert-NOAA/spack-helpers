@@ -24,6 +24,7 @@ runs:
       shell: bash
       run: |
         echo $PATH
+        ls /home/runner/work/spack-helpers/spack-helpers/spack/bin
         cat $GITHUB_PATH
         which spack
         if [ -z $SPACK_ROOT ]; then
