@@ -5,12 +5,12 @@ on: [push, pull_request]
 jobs:
   test-with-existing-spack:
     runs-on: ubuntu-24.04
-    steps:
-      - name: Setup Spack
-        uses: spack/setup-spack@v2
-      
+    steps:      
       - name: Checkout action
         uses: actions/checkout@v4
+
+      - name: Setup Spack
+        uses: spack/setup-spack@v2
       
       - name: Test action with existing Spack
         uses: ./
