@@ -1,0 +1,31 @@
+name: Setup Spack Helpers
+description: Check out and configure spack-helpers extension for Spack
+
+inputs:
+  install-spack:
+    description: Install Spack using spack/setup-spack action
+    required: false
+    default: 'false'
+  spack-ref:
+    description: Spack ref/branch to install (only used if install-spack is true)
+    required: false
+    default: 'develop'
+
+runs:
+  using: composite
+  steps:
+    - name: Install Spack
+      if: inputs.install-spack == 'true'
+      uses: spack/setup-spack@v2
+      with:
+        ref: ${{ inputs.spack-ref }}
+    
+    - name: Configure extension
+      shell: spack-bash {0}
+      run: |
+        cd ${{ github.action_path }}
+        if [ -z $SPACK_ROOT ]; then
+          export SPACK_ROOT=$(spack location --spack-root)
+          echo "SPACK_ROOT=$SPACK_ROOT" >> $GITHUB_ENV
+        fi
+        . source_me.sh
