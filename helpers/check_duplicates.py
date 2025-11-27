@@ -8,6 +8,7 @@ from collections import defaultdict
 from typing import Dict, List, Set
 
 import spack.spec
+import spack.llnl.util.tty as tty
 
 
 def _get_build_only_packages(env) -> Set[str]:
@@ -76,20 +77,18 @@ def check_duplicate_packages(env, ignore_packages=None, ignore_build_deps=False)
     # Track specs by package name
     packages_by_name = defaultdict(list)
     
-    # Iterate over all concretized specs and their dependencies
-    for user_spec, concrete_spec in env.concretized_specs():
-        # Traverse the entire dependency graph (including root)
-        for spec in concrete_spec.traverse():
-            pkg_name = spec.name
-            
-            # Skip ignored packages
-            if pkg_name in ignore_set:
-                continue
-            
-            # Check if we already have a different hash for this package
-            existing_hashes = [s.dag_hash() for s in packages_by_name[pkg_name]]
-            if spec.dag_hash() not in existing_hashes:
-                packages_by_name[pkg_name].append(spec)
+    # Get all concretized specs from the environment
+    for spec in env.all_specs():
+        pkg_name = spec.name
+        
+        # Skip ignored packages
+        if pkg_name in ignore_set:
+            continue
+        
+        # Check if we already have a different hash for this package
+        existing_hashes = [s.dag_hash() for s in packages_by_name[pkg_name]]
+        if spec.dag_hash() not in existing_hashes:
+            packages_by_name[pkg_name].append(spec)
     
     # Filter to only return packages with duplicates
     duplicates = {
