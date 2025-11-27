@@ -4,6 +4,7 @@ import pytest
 
 import spack.environment as ev
 import spack.spec
+import spack.spec as spec_module
 import spack.extensions
 
 # Load the helpers extension
@@ -38,18 +39,19 @@ def _validation_env_base(tmp_path_factory):
     # Add specs that will create various validation scenarios
     specs_to_add = [
         # Duplicates: zlib with two different variants
-        "zlib+shared",
-        "zlib~shared",
+        "zlib+shared ^gmake@4.3",
+        "zlib~shared ^gmake@4.2",
         
         # Different packages using gcc
         "libelf%gcc",
         "libdwarf%gcc",
         
-        # Simple package for testing compiler restrictions
-        "gmake%gcc",
+        # Packages that will pull in gmake as a build dependency with different versions
+        # (gmake is a build dependency for many packages)
+        "autoconf",
+        "automake",
         
         # Additional packages for approved/unapproved testing
-        "cmake",
         "py-numpy",
     ]
     
@@ -112,26 +114,59 @@ def test_check_duplicate_packages_no_false_positives(validation_test_env):
     
     # Packages like libelf, libdwarf should not be flagged as duplicates
     # (they were only added once)
-    for pkg in ["libelf", "libdwarf", "cmake"]:
+    for pkg in ["libelf", "libdwarf"]:
         if pkg in duplicates:
             assert len(duplicates[pkg]) > 1, f"{pkg} should only be flagged if truly duplicated"
+
+
+def test_check_duplicate_packages_includes_dependencies(validation_test_env):
+    """Test that check_duplicate_packages detects duplicates in transitive dependencies."""
+    env = validation_test_env
+    
+    # Check for duplicates across the entire dependency graph
+    duplicates = check_duplicate_packages(env)
+    
+    # Verify that gmake duplicates are detected
+    # gmake is not a root spec but appears as a dependency with different versions
+    assert "gmake" in duplicates, "Should detect gmake dependency duplicates"
+
+
+def test_check_duplicate_packages_ignore_build_deps(validation_test_env):
+    """Test that check_duplicate_packages can ignore build-only dependencies."""
+    env = validation_test_env
+    
+    # Get duplicates without ignoring build deps
+    duplicates_with_build = check_duplicate_packages(env, ignore_build_deps=False)
+    
+    # Get duplicates ignoring build deps
+    duplicates_without_build = check_duplicate_packages(env, ignore_build_deps=True)
+    
+    # gmake should appear as a duplicate when not ignoring build deps
+    # (autoconf and automake both pull in gmake as a build dependency)
+    assert "gmake" in duplicates_with_build, \
+        "gmake should be detected as duplicate when not ignoring build deps"
+    
+    # gmake should NOT appear as a duplicate when ignoring build deps
+    # (since it's only used as a build dependency)
+    assert "gmake" not in duplicates_without_build, \
+        "gmake should not be detected as duplicate when ignoring build deps"
 
 
 def test_check_compiler_usage_detects_violations(validation_test_env):
     """Test that check_compiler_usage detects packages using restricted compilers."""
     env = validation_test_env
     
-    # Allow only callpath to use gcc
-    allowed_packages = ["gmake"]
+    # Allow only autoconf to use gcc
+    allowed_packages = ["autoconf"]
     illegal_specs = check_compiler_usage(env, "gcc", allowed_packages)
     
-    # Should find specs using gcc that are not gmake
+    # Should find specs using gcc that are not autoconf
     # (libelf, libdwarf, and potentially dependencies)
     assert len(illegal_specs) > 0, "Should detect packages using gcc that aren't allowed"
     
-    # Verify that gmake is not in the illegal list
+    # Verify that autoconf is not in the illegal list
     illegal_names = [spec.name for spec in illegal_specs]
-    assert "gmake" not in illegal_names, "gmake should not be in illegal list"
+    assert "autoconf" not in illegal_names, "autoconf should not be in illegal list"
 
 
 def test_check_compiler_usage_no_violations(validation_test_env):
@@ -203,16 +238,16 @@ def test_check_approved_packages_detects_violations(validation_test_env):
     env = validation_test_env
     
     # Allow only a subset of packages
-    approved_packages = ["zlib", "gmake"]
+    approved_packages = ["zlib", "autoconf"]
     unauthorized_specs = check_approved_packages(env, approved_packages)
     
-    # Should find unauthorized packages (like libelf, libdwarf, cmake, etc.)
+    # Should find unauthorized packages (like libelf, libdwarf, etc.)
     assert len(unauthorized_specs) > 0, "Should detect unauthorized packages"
     
     # Verify that approved packages are not in the unauthorized list
     unauthorized_names = [spec.name for spec in unauthorized_specs]
     assert "zlib" not in unauthorized_names, "zlib should not be unauthorized"
-    assert "gmake" not in unauthorized_names, "gmake should not be unauthorized"
+    assert "autoconf" not in unauthorized_names, "autoconf should not be unauthorized"
 
 
 def test_check_approved_packages_all_approved(validation_test_env):

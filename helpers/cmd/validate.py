@@ -55,6 +55,11 @@ def setup_parser(subparser):
         default=[],
         help='package name to ignore (can be specified multiple times)'
     )
+    duplicates_parser.add_argument(
+        '--ignore-build-deps',
+        action='store_true',
+        help='ignore duplicates for packages that are only used as build dependencies'
+    )
     
     # allow-pkgs-for-compiler subcommand
     compiler_parser = sp.add_parser(
@@ -131,7 +136,11 @@ def validate(parser, args):
 
     if args.validate_command == 'check-duplicates':
         ignore_packages = args.ignore_package if args.ignore_package else []
-        duplicates = check_duplicate_packages(env, ignore_packages=ignore_packages)
+        duplicates = check_duplicate_packages(
+            env, 
+            ignore_packages=ignore_packages,
+            ignore_build_deps=args.ignore_build_deps
+        )
         
         if duplicates:
             tty.error("Duplicates found!")
