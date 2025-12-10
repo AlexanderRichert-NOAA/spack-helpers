@@ -73,23 +73,22 @@ def _find_go_executable(spec: "spack.spec.Spec", use_spack_go: bool = False) -> 
         SpackError: If no Go executable can be found
     """
     # Try to use the Go from the spec's dependency first
-    if "go" in spec:
-        go_dep = spec["go"]
-        dep_go_path = os.path.join(go_dep.prefix.bin, "go")
+    go_dep = spec["go"]
+    dep_go_path = os.path.join(go_dep.prefix.bin, "go")
         
-        if which(dep_go_path):
-            tty.debug(f"Using Go from spec dependency: {dep_go_path}")
-            return Executable(dep_go_path)
-        
-        # If use_spack_go is requested, install go from Spack
-        if use_spack_go:
-            tty.msg("Installing 'go' from Spack...")
-            installer = PackageInstaller([go_dep.package])
-            installer.install()
-            go_path = os.path.join(go_dep.prefix.bin, "go")
-            if which(go_path):
-                tty.info(f"Using Spack-installed Go: {go_path}")
-                return Executable(go_path)
+    if which(dep_go_path):
+        tty.debug(f"Using Go from spec dependency: {dep_go_path}")
+        return Executable(dep_go_path)
+    
+    # If use_spack_go is requested, install go from Spack
+    if use_spack_go:
+        tty.msg("Installing 'go' from Spack...")
+        installer = PackageInstaller([go_dep.package])
+        installer.install()
+        go_path = os.path.join(go_dep.prefix.bin, "go")
+        if which(go_path):
+            tty.info(f"Using Spack-installed Go: {go_path}")
+            return Executable(go_path)
     
     # Fall back to system Go (only if use_spack_go is False)
     if not use_spack_go and which("go"):
