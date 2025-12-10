@@ -13,6 +13,7 @@ from spack.extensions.helpers.check_duplicates import check_duplicate_packages
 from spack.extensions.helpers.check_compiler_usage import check_compiler_usage
 from spack.extensions.helpers.check_allowed_compilers import check_allowed_compilers
 from spack.extensions.helpers.check_approved_packages import check_approved_packages
+from spack.extensions.helpers.check_buildable import check_buildable_configuration
 
 
 @pytest.fixture(scope="session")
@@ -279,3 +280,43 @@ def test_check_approved_packages_none_approved(validation_test_env):
     # Count should match total number of concretized specs
     total_specs = len(list(env.concretized_specs()))
     assert len(unauthorized_specs) == total_specs, "All specs should be unauthorized"
+
+
+def test_check_buildable_configuration_no_violations(validation_test_env):
+    """Test check_buildable when all unbuildable packages use externals."""
+    env = validation_test_env
+    
+    # Initially no buildable:false settings, so no violations
+    violations = check_buildable_configuration(env)
+    assert len(violations) == 0, "Should find no violations without buildable:false settings"
+
+
+def test_check_buildable_configuration_with_violation(validation_test_env):
+    """Test check_buildable detects packages marked unbuildable being built."""
+    env = validation_test_env
+    
+    # Get a package name that's in the environment and mark it unbuildable
+    pkg_name = None
+    for _, concrete_spec in env.concretized_specs():
+        # Find a non-external package
+        if not concrete_spec.external:
+            pkg_name = concrete_spec.name
+            break
+    
+    assert pkg_name is not None, "Should find at least one non-external package"
+    
+    # Mark the package as unbuildable
+    if 'packages' not in env.manifest.configuration:
+        env.manifest.configuration['packages'] = {}
+    env.manifest.configuration['packages'][pkg_name] = {'buildable': False}
+    
+    # Check for violations
+    violations = check_buildable_configuration(env)
+    
+    # Should find at least the package we marked as unbuildable
+    assert len(violations) > 0, "Should detect unbuildable package being built"
+    
+    # Verify the package we marked is in the violations
+    violation_names = [spec.name for spec in violations]
+    assert pkg_name in violation_names, f"{pkg_name} should be in violations"
+

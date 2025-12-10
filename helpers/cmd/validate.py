@@ -15,6 +15,7 @@ from spack.extensions.helpers.check_duplicates import check_duplicate_packages
 from spack.extensions.helpers.check_compiler_usage import check_compiler_usage
 from spack.extensions.helpers.check_allowed_compilers import check_allowed_compilers
 from spack.extensions.helpers.check_approved_packages import check_approved_packages
+from spack.extensions.helpers.check_buildable import check_buildable_configuration
 
 description = "validate Spack environments"
 section = "environments"
@@ -109,6 +110,12 @@ def setup_parser(subparser):
         '--pkgs-from-file',
         type=str,
         help='read approved package names from a newline-delimited text file'
+    )
+    
+    # check-buildable subcommand
+    buildable_parser = sp.add_parser(
+        'check-buildable',
+        help='verify that unbuildable packages are not being built'
     )
 
 
@@ -226,4 +233,16 @@ def validate(parser, args):
             return 1
         else:
             tty.msg("All packages are approved.")
+            return 0
+    
+    elif args.validate_command == 'check-buildable':
+        violations = check_buildable_configuration(env)
+        
+        if violations:
+            tty.error(f"Found {len(violations)} package(s) marked unbuildable but being built!")
+            for spec in violations:
+                tty.msg(f"  {spec.format('{name}@{version}/{hash:7}')}")
+            return 1
+        else:
+            tty.msg("All unbuildable packages are using externals.")
             return 0
